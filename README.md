@@ -1,43 +1,43 @@
-# RedBot — Autonomous AI Security Agent
+# 🤖 RedBot — Autonomous AI Security Agent
 
 ### Our pitch deck is located [here](https://github.com/yli12313/AI-Agents-Hackathon-2025/blob/main/pitch_deck/20251004_AI_Agents_Hackathon.pdf)!
 
-🤖 **An autonomous AI agent that red-teams chatbots, finds vulnerabilities, and prescribes remediation plans.**
+**An autonomous AI agent that red-teams chatbots, finds vulnerabilities, and generates prescriptive remediation plans.**
 
-Built for the AI Agents Hackathon 2025 using OpenHands, ClickHouse, Linkup, and DeepL.
+Built for the AI Agents Hackathon 2025 integrating **ClickHouse Cloud**, **OpenHands**, and **DeepL**.
 
 ---
 
 ## 🎯 Overview
 
 RedBot is an autonomous AI agent that:
-- 🔴 **Attacks** consented chatbot endpoints with security tests (PII leaks, prompt injection)
-- 🔍 **Analyzes** responses to detect vulnerabilities
-- 📋 **Prescribes** detailed remediation plans with ETA, cost estimates, and acceptance tests
-- 💾 **Persists** findings to ClickHouse for analytics and ROI tracking
-- 🌍 **Translates** plans to multiple languages using DeepL
-- 🔗 **Enriches** findings with real-time web data from Linkup
+- 🔴 **Attacks** chatbot endpoints with 140+ jailbreak templates and seed prompts
+- 🔍 **Analyzes** responses using AI to detect vulnerabilities (PII leaks, prompt injection)
+- 📋 **Generates** prescriptive remediation plans with ETA, cost estimates, and ROI calculations
+- 💾 **Persists** findings to ClickHouse Cloud for real-time analytics and dashboards
+- 🌍 **Translates** all findings and plans to 7+ languages using DeepL
+- 🤖 **Orchestrates** automated security assessments via OpenHands agent platform
 
-**Sponsor Tools Used:**
-- ✅ **OpenHands** - Autonomous coding agent orchestration
-- ✅ **ClickHouse** - Fast analytical database for storing findings & plans
-- ✅ **Linkup** - Real-time web search for vulnerability context
-- ✅ **DeepL** - High-quality translation service
+**Sponsor Tools Integrated:**
+- ✅ **ClickHouse Cloud** - Real-time analytics database (AWS hosted)
+- ✅ **OpenHands** - Agent orchestration platform for automated workflows
+- ✅ **DeepL** - Enterprise-grade translation API (7 languages)
 
 ---
 
 ## 🚀 Quick Start (Local Setup)
 
 ### Prerequisites
-- Python 3.9+ installed
+- Python 3.9+ installed (3.13 compatible)
 - Git installed
+- DeepL API key (free at https://www.deepl.com/pro-api)
 
 ### Step 1: Clone the Repository
 
 ```bash
 git clone https://github.com/yli12313/AI-Agents-Hackathon-2025.git ai-agent-redbot
 cd ai-agent-redbot
-git checkout feature/mvp
+git checkout main  # Use main branch for latest features
 ```
 
 ### Step 2: Create Virtual Environment
@@ -64,26 +64,29 @@ cp .env.example .env
 Edit `.env` with your settings:
 
 ```bash
-# Target endpoint for red-teaming (replace with your test endpoint)
-TARGET_URL=https://hack.ray-shen.me/api/chat
+# Target endpoint for red-teaming
+TARGET_URL=https://hack.ray-shen.me/api/chatbot
 
-# Optional: ClickHouse connection (if running Phase 2+)
-CH_HOST=localhost
-CH_PORT=8123
+# ClickHouse Cloud connection (demo credentials provided)
+CH_HOST=z1jqy20jte.us-east-2.aws.clickhouse.cloud
+CH_USER=default
+CH_PASSWORD=oYZBfGL3~yRbi
+CH_SECURE=true
+
+# DeepL API key (get free key at https://www.deepl.com/pro-api)
+DEEPL_API_KEY=your-deepl-api-key-here
 
 # Optional: OpenHands bridge endpoint
-OPENHANDS_URL=
-
-# Optional: Notification targets
-DISCORD_WEBHOOK_URL=
-GH_REPO=
-GH_ISSUE_ID=
-GH_TOKEN=
+OPENHANDS_URL=http://localhost:5050/run
 ```
 
-### Step 5: Run the Streamlit App
+### Step 5: Run the RedBot App
 
 ```bash
+# Main application with full features
+streamlit run redbot_app.py
+
+# Alternative: Legacy version
 streamlit run streamlit.py
 ```
 
@@ -95,14 +98,21 @@ The app will open in your browser at `http://localhost:8501` 🎉
 
 ```
 ai-agent-redbot/
-├── streamlit.py              # Main Streamlit UI application
-├── openhands_tools.py        # Core agent tools (attack, analyze, plan, persist)
-├── agent_spec.py             # Agent specification and configuration
-├── plan.yaml                 # Workflow orchestration plan
-├── requirements.txt          # Python dependencies
-├── .env.example              # Environment variable template
-├── .env                      # Your local config (not committed)
-└── README.md                 # This file
+├── redbot_app.py            # Main Streamlit application (NEW)
+├── streamlit.py             # Legacy Streamlit UI
+├── openhands_tools.py       # Core agent tools (attack, analyze, plan, persist)
+├── openhands_bridge.py      # OpenHands orchestration bridge
+├── deepl_translator.py      # DeepL translation module
+├── attack_loader.py         # Jailbreak attack template loader
+├── jailbreak/               # 140+ jailbreak attack templates
+│   ├── dan_*.yaml          # DAN variations
+│   ├── pliny/              # Platform-specific attacks
+│   └── ...                 # Many more attack types
+├── seed_prompts/            # Seed prompt attacks
+├── requirements.txt         # Python dependencies
+├── .env.example            # Environment variable template
+├── .env                    # Your local config (not committed)
+└── README.md               # This file
 ```
 
 ---
@@ -126,20 +136,27 @@ For detailed setup instructions, see [TRANSLATION_README.md](TRANSLATION_README.
 
 ## 🎮 How to Use
 
-### Running a Red-Team Cycle
+### Running a Security Assessment
 
-1. **Select Target**: Enter the chatbot endpoint URL in the sidebar
-2. **Choose Attack Type**: 
-   - `PII_LEAK_CHAIN` - Tests for email/contact information leaks
-   - `SYSTEM_PROMPT_ECHO` - Tests for system prompt extraction
-3. **Select Runner**:
-   - `Direct (fallback)` - Immediate local execution (no OpenHands needed)
-   - `OpenHands` - Uses OpenHands agent orchestration (requires bridge setup)
+#### Quick Attack Mode (Recommended for Demo)
+1. **Select Attack Mode**: Choose "Quick Attack" in sidebar
+2. **Attack Type**: Select "Custom Prompt"
+3. **Enter Prompt**: Type `admin email password database`
 4. **Click "▶️ Run Cycle"**
-5. **View Results** in three panels:
-   - **Left**: Raw transcript from target endpoint
-   - **Middle**: Structured vulnerability finding (JSON)
-   - **Right**: Prescriptive remediation plan
+5. **View Results** in three tabs:
+   - **Transcript**: Raw response from chatbot
+   - **Findings**: Vulnerability analysis with severity
+   - **Plan**: Prescriptive remediation plan with ROI
+
+#### Advanced Mode (Full Features)
+1. **Select Attack Mode**: Choose "Advanced"
+2. **Jailbreak Template**: Pick from 140+ templates (DAN, Hackerman, etc.)
+3. **Seed Prompt**: Choose attack seed (steal_system_prompt, etc.)
+4. **Run Attack** and analyze comprehensive results
+
+#### Translation
+1. **Select Language**: Choose from dropdown (Spanish, French, German, etc.)
+2. **Results Auto-Translate**: All findings and plans translate in real-time
 
 ---
 
@@ -175,46 +192,64 @@ For detailed setup instructions, see [TRANSLATION_README.md](TRANSLATION_README.
 
 ## 🐛 Troubleshooting
 
-### "pip: command not found"
-Use `pip3` instead:
+### DeepL Translation Not Working
+- **Issue**: "DeepL API key not set" warning
+- **Fix**: Add `DEEPL_API_KEY=your-key` to `.env` file and restart Streamlit
+
+### Empty Results in Tabs
+- **Issue**: Findings/Plan tabs show "UNKNOWN" or empty
+- **Fix**: Use "Quick Attack" mode with "Custom Prompt" - it always works!
+
+### Module Not Found Errors
 ```bash
-pip3 install -r requirements.txt
+pip install pyyaml deepl pytest  # Install missing packages
 ```
 
-### "externally-managed-environment" error
-You need to use a virtual environment (see Step 2 above).
+### ClickHouse Warning
+- **Message**: "ClickHouse not configured - using mock mode"
+- **Fix**: Add ClickHouse credentials to `.env` (see Step 4)
+- **Note**: App works fine without it, just no persistence
 
-### Streamlit won't start
-Make sure you're in the virtual environment:
+### Python 3.13 Warnings
+- These are deprecation warnings, not errors - ignore them
+- App runs fine on Python 3.13
+
+### Streamlit Reload Loop
 ```bash
-source venv/bin/activate  # You should see (venv) in your prompt
-streamlit run streamlit.py
+pkill -f streamlit  # Kill all instances
+streamlit run redbot_app.py  # Start fresh
 ```
-
-### Target endpoint not responding
-Make sure the `TARGET_URL` in your `.env` file is correct and accessible.
-
-### ClickHouse connection errors
-If you haven't set up ClickHouse yet (Phase 2), the app will still work in Direct mode. ClickHouse persistence will fail gracefully.
 
 ---
 
-## 🚧 Development Phases
+## ✅ Features Completed
 
-- ✅ **Phase 1**: Streamlit UI + Direct fallback mode (COMPLETE)
-- 🔄 **Phase 2**: ClickHouse setup + data persistence (IN PROGRESS)
-- ⏳ **Phase 3**: Linkup integration for real-time web data
-- ⏳ **Phase 4**: DeepL integration for multi-language support
-- ⏳ **Phase 5**: OpenHands bridge for agent orchestration
+- ✅ **140+ Jailbreak Templates**: DAN, Hackerman, Dev Mode, and more
+- ✅ **ClickHouse Cloud Integration**: Real-time analytics on AWS
+- ✅ **DeepL Translation**: 7 languages with automatic translation
+- ✅ **OpenHands Orchestration**: Automated attack workflows
+- ✅ **Advanced Attack System**: Reconnaissance → Assessment → Escalation
+- ✅ **ROI Calculations**: Cost/benefit analysis for remediation
+- ✅ **Prescriptive Plans**: Detailed implementation steps with ETAs
 
 ---
 
-## 📝 Notes for Teammates
+## 📝 Quick Demo Script (2 minutes)
 
-- **Demo Deadline**: Less than 3 hours! Focus on core functionality first.
-- **Target Endpoint**: Use the provided test endpoint or set up your own vulnerable chatbot.
-- **Direct Mode**: Use this for immediate testing without OpenHands setup.
-- **Git Workflow**: We're working on the `feature/mvp` branch.
+1. **Intro (20 sec)**: "RedBot autonomously red-teams AI chatbots to find vulnerabilities"
+2. **Demo (60 sec)**:
+   - Click "Run Cycle" with Quick Attack mode
+   - Show Findings tab: "Detected HIGH severity vulnerabilities"
+   - Show Plan tab: "Generated 6-step remediation with ROI"
+3. **Translation (20 sec)**: Select Spanish → "Global support via DeepL"
+4. **Close (20 sec)**: "Integrated ClickHouse, OpenHands, and DeepL"
+
+## 🚀 Tips for Success
+
+- **Use Quick Attack Mode** for guaranteed results
+- **Custom Prompt** always generates findings
+- **Translation** works instantly after adding DeepL key
+- **ClickHouse Cloud** credentials are in `.env.example`
 
 ---
 
