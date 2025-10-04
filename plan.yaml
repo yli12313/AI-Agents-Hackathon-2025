@@ -1,0 +1,15 @@
+goal: "Run a single red-team cycle and post the plan as a comment."
+steps:
+  - call: attack_target
+    save_as: transcript
+  - call: structure_finding
+    with: { transcript: $transcript }
+    save_as: finding
+  - call: build_plan
+    with: { vuln: $finding }
+    save_as: plan
+  - call: persist_clickhouse
+    with: { vuln: $finding, plan: $plan }
+  - call: notify_comment
+    with: { vuln: $finding, plan: $plan }
+done_when: notify_comment
