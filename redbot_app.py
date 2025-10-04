@@ -1,4 +1,4 @@
-import os, re, json, requests, datetime as dt
+import os, re, requests, datetime as dt
 import streamlit as st
 from attack_loader import AttackLoader
 from openhands_tools import run_comprehensive_attack_cycle
@@ -214,14 +214,11 @@ Phase 3: Targeted Escalation (25 adaptive attacks)
         # Automated agent settings
         st.markdown("**Automation Settings:**")
         max_execution_time = st.slider("Max Execution Time (minutes)", 2, 20, 10)
-        severity_threshold = st.selectbox("Severity Threshold", ["HIGH", "MEDIUM", "LOW"], index=1)
-        notification_enabled = st.checkbox("Enable Notifications", value=True)
+
         
         # Prepare automation config
         automation_config = {
             "max_execution_minutes": max_execution_time,
-            "severity_threshold": severity_threshold,
-            "notifications_enabled": notification_enabled,
             "automated_mode": True
         }
     
@@ -507,47 +504,171 @@ Time Estimate: {remediation_plans.get('estimated_time', 'TBD')}
         }
         st.success(f"Attack cycle completed in {latency_ms} ms")
         
-        # Show attack details if available
-        if isinstance(attack_result, dict) and "attack_used" in attack_result:
-            jailbreak_info = attack_config.get('jailbreak_attack', 'N/A')
-            seed_info = attack_config.get('seed_prompt', 'N/A')
-            st.info(f"🔍 Attack used: Jailbreak={jailbreak_info}, Seed={seed_info}")
             
     except Exception as e:
         st.error(f"Run failed: {e}")
 
 # ---- Output panels ----
-L, M, R = st.columns([1.1,1.2,1.1])
+st.markdown("---")
+st.markdown("## 📋 Assessment Results")
 
-with L:
-    st.subheader("Transcript (target reply)")
+# Create tabs for better organization
+tab1, tab2, tab3 = st.tabs(["📝 Transcript", "🔍 Findings", "📋 Prescriptive Plan"])
+
+with tab1:
+    st.markdown("### Target Response Transcript")
     if st.session_state.get("result"):
-        st.code(st.session_state["result"]["transcript"] or "(empty)", language="markdown")
+        transcript = st.session_state["result"]["transcript"] or "(empty)"
+        
+        # Add metadata if available
+        if st.session_state.get("result", {}).get("attack_metadata"):
+            metadata = st.session_state["result"]["attack_metadata"]
+            with st.expander("🔧 Attack Configuration", expanded=False):
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Jailbreak", metadata.get("jailbreak", "None"))
+                with col2:
+                    st.metric("Seed Prompt", metadata.get("seed_prompt", "None"))
+                with col3:
+                    st.metric("Custom", "Yes" if metadata.get("custom") else "No")
+        
+        # Display transcript with better formatting
+        if transcript and transcript != "(empty)":
+            # Check if it's a comprehensive assessment
+            if "🤖 COMPREHENSIVE SECURITY ASSESSMENT" in transcript:
+                st.success("✅ Comprehensive AI-powered security assessment completed")
+                
+                # Parse and display structured results
+                if "📊 OVERALL RESULTS:" in transcript:
+                    st.markdown("#### 📊 Overall Results")
+                    results_section = transcript.split("📊 OVERALL RESULTS:")[1].split("🎯 CRITICAL FINDINGS:")[0]
+                    st.code(results_section.strip(), language="text")
+                
+                if "🎯 CRITICAL FINDINGS:" in transcript:
+                    st.markdown("#### 🎯 Critical Findings")
+                    findings_section = transcript.split("🎯 CRITICAL FINDINGS:")[1].split("🔧 REMEDIATION PLAN:")[0]
+                    st.code(findings_section.strip(), language="text")
+                
+                if "🔧 REMEDIATION PLAN:" in transcript:
+                    st.markdown("#### 🔧 Remediation Plan")
+                    plan_section = transcript.split("🔧 REMEDIATION PLAN:")[1].split("📋 SECURITY RECOMMENDATIONS:")[0]
+                    st.code(plan_section.strip(), language="text")
+                
+                if "📋 SECURITY RECOMMENDATIONS:" in transcript:
+                    st.markdown("#### 📋 Security Recommendations")
+                    recs_section = transcript.split("📋 SECURITY RECOMMENDATIONS:")[1].split("⏱️ Assessment completed")[0]
+                    st.code(recs_section.strip(), language="text")
+                
+                # Show full transcript in expandable section
+                with st.expander("📄 View Full Transcript", expanded=False):
+                    st.code(transcript, language="text")
+            else:
+                # Regular attack response
+                st.code(transcript, language="text")
+        else:
+            st.info("Click 'Run Cycle' to fetch a transcript.")
     else:
-        st.info("Click Run Cycle to fetch a transcript.")
+        st.info("Click 'Run Cycle' to fetch a transcript.")
 
-with M:
-    st.subheader("Finding (structured)")
+with tab2:
+    st.markdown("### Security Findings Analysis")
     if st.session_state.get("result"):
-        st.json(st.session_state["result"]["finding"])
+        finding = st.session_state["result"]["finding"]
+        
+        # Display key metrics
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            severity_color = {"HIGH": "🔴", "MEDIUM": "🟡", "LOW": "🟢"}.get(finding.get("severity", "UNKNOWN"), "⚪")
+            st.metric("Severity", f"{severity_color} {finding.get('severity', 'UNKNOWN')}")
+        with col2:
+            st.metric("Category", finding.get("category", "UNKNOWN"))
+        with col3:
+            confidence = finding.get("confidence", 0)
+            st.metric("Confidence", f"{confidence:.1%}")
+        with col4:
+            success_icon = "✅" if finding.get("success", False) else "❌"
+            st.metric("Success", f"{success_icon} {finding.get('success', False)}")
+        
+        # Display indicators if any
+        if finding.get("indicators"):
+            st.markdown("#### 🚨 Security Indicators")
+            for indicator in finding["indicators"]:
+                if isinstance(indicator, dict):
+                    st.warning(f"**{indicator.get('attack_type', 'Unknown')}**: {indicator.get('snippet', 'No details')}")
+                else:
+                    st.warning(f"**{indicator}**")
+        
+        # Display snippet
+        if finding.get("snippet"):
+            st.markdown("#### 📄 Evidence Snippet")
+            st.code(finding["snippet"], language="text")
+        
+        # Show raw finding data
+        with st.expander("🔍 Raw Finding Data", expanded=False):
+            st.json(finding)
     else:
-        st.info("Finding will appear here.")
+        st.info("Finding will appear here after running an assessment.")
 
-with R:
-    st.subheader("Prescriptive Plan (summary)")
+with tab3:
+    st.markdown("### Prescriptive Remediation Plan")
     if st.session_state.get("result"):
         plan = st.session_state["result"]["plan"]
-        eng = "\n".join([
-            f"ETA: {plan['engineer_plan']['eta_hours']}h | Owner: API {plan['engineer_plan']['owner']['api']} & SRE {plan['engineer_plan']['owner']['sre']}",
-            "",
-            *[f"{i+1}) {s}" for i,s in enumerate(plan['engineer_plan']['steps'])],
-            "",
-            "Acceptance tests:",
-            *[f"- {t}" for t in plan['engineer_plan']['acceptance_tests']],
-            "",
-            f"Rollback: {plan['engineer_plan']['rollback']}"
-        ])
-        st.code(eng, language="markdown")
-        st.caption(f"Risk: {plan['exec_summary']['risk_now']} • KPI: {plan['exec_summary']['kpi']} • ROI/hr: {plan['roi']['risk_reduced_per_hour']}")
+        
+        # Executive Summary
+        st.markdown("#### 📊 Executive Summary")
+        exec_summary = plan.get("exec_summary", {})
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            risk_level = exec_summary.get("risk_now", "UNKNOWN")
+            risk_color = {"HIGH": "🔴", "MEDIUM": "🟡", "LOW": "🟢"}.get(risk_level, "⚪")
+            st.metric("Current Risk", f"{risk_color} {risk_level}")
+        with col2:
+            eta_hours = exec_summary.get("eta_hours", 0)
+            st.metric("ETA", f"{eta_hours}h")
+        with col3:
+            roi_rank = exec_summary.get("roi_rank", 0)
+            st.metric("ROI Priority", f"#{roi_rank}")
+        
+        # KPI and ROI
+        st.markdown(f"**KPI:** {exec_summary.get('kpi', 'N/A')}")
+        roi = plan.get("roi", {})
+        st.markdown(f"**ROI per Hour:** {roi.get('risk_reduced_per_hour', 0):.1f}")
+        
+        # Engineering Plan
+        st.markdown("#### 🔧 Engineering Implementation Plan")
+        eng_plan = plan.get("engineer_plan", {})
+        
+        # Owner information
+        owners = eng_plan.get("owner", {})
+        st.markdown(f"**Owners:** API Team: `{owners.get('api', 'N/A')}` | SRE Team: `{owners.get('sre', 'N/A')}`")
+        
+        # Implementation steps
+        st.markdown("#### 📋 Implementation Steps")
+        steps = eng_plan.get("steps", [])
+        for i, step in enumerate(steps, 1):
+            st.markdown(f"**{i}.** {step}")
+        
+        # Acceptance tests
+        st.markdown("#### ✅ Acceptance Tests")
+        tests = eng_plan.get("acceptance_tests", [])
+        for test in tests:
+            st.markdown(f"• {test}")
+        
+        # Rollback plan
+        rollback = eng_plan.get("rollback", "No rollback plan specified")
+        st.markdown("#### 🔄 Rollback Plan")
+        st.markdown(f"`{rollback}`")
+        
+        # Timeline and cost
+        st.markdown("#### ⏱️ Timeline & Cost")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("Estimated Hours", eng_plan.get("eta_hours", 0))
+        with col2:
+            st.metric("Cost Hours", eng_plan.get("cost_hours", 0))
+        
+        # Show raw plan data
+        with st.expander("🔍 Raw Plan Data", expanded=False):
+            st.json(plan)
     else:
-        st.info("Plan will appear here.")
+        st.info("Plan will appear here after running an assessment.")
