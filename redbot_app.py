@@ -390,7 +390,85 @@ Time Estimate: {remediation_plans.get('estimated_time', 'TBD')}
             transcript = attack_result if isinstance(attack_result, str) else str(attack_result)
         else:
             # Local, no-OpenHands path (so you can POC immediately)
-            attack_result = direct_attack_and_capture(target_url, attack_config)
+            if attack_config.get("automated_mode"):
+                # Use comprehensive attack cycle for automated mode
+                comprehensive_results = run_comprehensive_attack_cycle(target_url)
+                
+                # Extract results from comprehensive assessment
+                vulnerability_report = comprehensive_results.get("vulnerability_report", {})
+                remediation_plans = comprehensive_results.get("remediation_plans", {})
+                attack_summary = comprehensive_results.get("attack_summary", {})
+                recommendations = comprehensive_results.get("recommendations", [])
+                
+                # Create structured response for UI display
+                transcript = f"""
+🤖 COMPREHENSIVE SECURITY ASSESSMENT COMPLETED
+
+📊 OVERALL RESULTS:
+- Security Posture: {vulnerability_report.get('overall_severity', 'UNKNOWN')}
+- Total Vulnerabilities Found: {vulnerability_report.get('total_vulnerabilities', 0)}
+- Attack Success Rate: {vulnerability_report.get('success_rate', 0):.2%}
+- Total Attacks Executed: {attack_summary.get('total_attacks', 0)}
+
+🎯 CRITICAL FINDINGS:"""
+                
+                for finding in vulnerability_report.get('high_severity_findings', []):
+                    transcript += f"""
+
+⚠️ {finding.get('attack_type', 'Unknown Attack')}
+   Severity: {finding.get('severity', '')}
+   Confidence: {finding.get('confidence', 0):.2f}
+   Preview: {finding.get('snippet', 'N/A')}"""
+                
+                transcript += f"""
+
+🔧 REMEDIATION PLAN:
+Priority: {remediation_plans.get('priority', 'Medium')}
+Time Estimate: {remediation_plans.get('estimated_time', 'TBD')}
+
+📋 SECURITY RECOMMENDATIONS:"""
+                
+                for i, rec in enumerate(recommendations[:5], 1):
+                    transcript += f"\n{i}. {rec}"
+                
+                transcript += f"""
+
+⏱️ Assessment completed in {comprehensive_results.get('execution_time', 'Unknown time')}"""
+
+                # Create simplified finding for backwards compatibility
+                finding = {
+                    "category": vulnerability_report.get('overall_severity', 'COMPREHENSIVE_ASSESSMENT'),
+                    "severity": vulnerability_report.get('overall_severity', 'UNKNOWN'),
+                    "success": vulnerability_report.get('total_vulnerabilities', 0) > 0,
+                    "confidence": vulnerability_report.get('success_rate', 0),
+                    "indicators": vulnerability_report.get('high_severity_findings', []),
+                    "snippet": transcript[:300] + "..."
+                }
+                
+                # Create enhanced plan
+                plan = {
+                    "engineer_plan": {
+                        "eta_hours": 24 if vulnerability_report.get('overall_severity') == 'HIGH' else 72,
+                        "cost_hours": 24 if vulnerability_report.get('overall_severity') == 'HIGH' else 72,
+                        "owner": {"api": "security-team@company.com", "sre": "sre-oncall@company.com"},
+                        "steps": remediation_plans.get("critical_actions", ["Review comprehensive assessment results"]),
+                        "acceptance_tests": ["Re-run automated assessment with 0 high severity findings"],
+                        "rollback": "Emergency response plan activation"
+                    },
+                    "exec_summary": {
+                        "risk_now": vulnerability_report.get('overall_severity', 'UNKNOWN'),
+                        "eta_hours": 24 if vulnerability_report.get('overall_severity') == 'HIGH' else 72,
+                        "estimated_cost_hours": 24 if vulnerability_report.get('overall_severity') == 'HIGH' else 72,
+                        "kpi": f"Reduce vulnerabilities from {vulnerability_report.get('total_vulnerabilities', 0)} to 0",
+                        "roi_rank": 1 if vulnerability_report.get('overall_severity') == 'HIGH' else 2
+                    },
+                    "roi": {"risk_reduced_per_hour": 2.0 if vulnerability_report.get('total_vulnerabilities', 0) > 5 else 0.5}
+                }
+                
+                attack_result = {"response": transcript, "attack_used": {"automated": True}}
+            else:
+                # Use direct attack for manual modes
+                attack_result = direct_attack_and_capture(target_url, attack_config)
             
             # Handle both old string responses and new dict responses
             if isinstance(attack_result, dict):
@@ -399,6 +477,10 @@ Time Estimate: {remediation_plans.get('estimated_time', 'TBD')}
                     transcript = f"ERROR: {attack_result['error']}"
                     finding = {"category": "ERROR", "severity": "HIGH", "success": False, "confidence": 1.0, "indicators": [], "snippet": transcript}
                     plan = build_plan(finding)
+                elif attack_config.get("automated_mode"):
+                    # For automated mode, finding and plan are already created above
+                    transcript = attack_result["response"]
+                    # finding and plan are already set in the automated mode block
                 else:
                     transcript = attack_result["response"]
                     finding = structure_finding(transcript)

@@ -192,7 +192,10 @@ class OpenHandsAttackAgent:
         remediation_plans = self._generate_remediation_plans(vulnerability_report)
         
         # Phase 6: Persist and notify (if enabled)
-        self._persist_findings(vulnerability_report, remediation_plans)
+        try:
+            self._persist_findings(vulnerability_report, remediation_plans)
+        except Exception as e:
+            print(f"⚠️ Persistence/notification failed: {e}")
         
         return {
             "vulnerability_report": vulnerability_report,
