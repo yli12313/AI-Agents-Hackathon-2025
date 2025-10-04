@@ -1,5 +1,7 @@
 # RedBot — Autonomous AI Security Agent
 
+### Our pitch deck is located here.
+
 🤖 **An autonomous AI agent that red-teams chatbots, finds vulnerabilities, and prescribes remediation plans.**
 
 Built for the AI Agents Hackathon 2025 using OpenHands, ClickHouse, Linkup, and DeepL.
