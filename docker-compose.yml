@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:23.8-alpine
+    container_name: redbot-clickhouse
+    ports:
+      - "8123:8123"  # HTTP interface
+      - "9000:9000"  # Native client
+    environment:
+      - CLICKHOUSE_DB=default
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=
+    volumes:
+      - ./docker/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - clickhouse_data:/var/lib/clickhouse
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "localhost:8123/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - redbot-network
+
+volumes:
+  clickhouse_data:
+    driver: local
+
+networks:
+  redbot-network:
+    driver: bridge

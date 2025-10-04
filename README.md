@@ -95,12 +95,18 @@ The app will open in your browser at `http://localhost:8501` 🎉
 ai-agent-redbot/
 ├── streamlit.py              # Main Streamlit UI application
 ├── openhands_tools.py        # Core agent tools (attack, analyze, plan, persist)
+├── mock_clickhouse.py        # In-memory ClickHouse fallback for demo
 ├── agent_spec.py             # Agent specification and configuration
 ├── plan.yaml                 # Workflow orchestration plan
 ├── requirements.txt          # Python dependencies
+├── setup.sh                  # One-command setup script
+├── docker-compose.yml        # ClickHouse container configuration
+├── docker/
+│   └── schema.sql           # ClickHouse database schema
 ├── .env.example              # Environment variable template
 ├── .env                      # Your local config (not committed)
-└── README.md                 # This file
+├── README.md                 # Full documentation
+└── QUICKSTART.md            # 2-minute setup guide
 ```
 
 ---
