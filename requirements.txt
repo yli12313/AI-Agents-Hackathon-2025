@@ -1,0 +1,13 @@
+# Core dependencies
+streamlit==1.29.0
+requests==2.31.0
+
+# ClickHouse integration
+clickhouse-connect==0.6.23
+
+# Future integrations (Phase 2-4)
+# linkup-sdk  # Real-time web search
+# deepl==1.16.1  # Translation service
+
+# Optional: For OpenHands bridge
+# flask==3.0.0
