@@ -14,8 +14,11 @@ for various security vulnerabilities including prompt injection, PII leakage,
 system prompt extraction, and other attack vectors.
 """
 
-import os, requests, re, json, datetime as dt, datetime
-from typing import Dict, List, Any, Optional, Tuple
+import os
+import re
+import requests
+import datetime as dt
+from typing import Dict, List, Any, Optional
 from attack_loader import AttackLoader
 from database_tools import (
     store_attack_finding, get_adaptive_attack_recommendations, 
@@ -208,7 +211,7 @@ class OpenHandsAttackAgent:
             "attack_summary": self._generate_attack_summary(all_results),
             "recommendations": self._generate_security_recommendations(vulnerability_report),
             "total_attacks_executed": len(all_results),
-            "execution_time": datetime.datetime.now().isoformat()
+            "execution_time": dt.datetime.now().isoformat()
         }
     
     def _run_reconnaissance_attacks(self, target_url: str) -> List[Dict]:
@@ -362,7 +365,7 @@ class OpenHandsAttackAgent:
                 "attack_message": attack_message,
                 "chatbot_response": chatbot_response,
                 "vulnerability_analysis": analysis,
-                "timestamp": datetime.datetime.now().isoformat()
+                "timestamp": dt.datetime.now().isoformat()
             }
             
         except Exception as e:

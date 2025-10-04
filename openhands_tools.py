@@ -1,4 +1,7 @@
-import os, requests, re, json, datetime as dt, datetime
+import os
+import re
+import requests
+import datetime as dt
 from typing import Dict, List, Any, Optional
 import clickhouse_connect
 
@@ -225,7 +228,7 @@ def trigger_security_notifications(vulnerability_report: dict, remediation_plans
         
         txt += f"""
 
-**Security Assessment Completed:** {str(datetime.datetime.now())}"""
+**Security Assessment Completed:** {str(dt.datetime.now())}"""
         
         # Send via configured channels
         if GH_REPO and GH_ISSUE and GH_TOKEN:

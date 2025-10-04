@@ -105,6 +105,23 @@ ai-agent-redbot/
 
 ---
 
+## 🌐 Translation Support
+
+RedBot includes comprehensive DeepL translation support for international teams:
+
+- **15+ Languages**: Spanish, French, German, Japanese, Chinese, and more
+- **Real-time Translation**: Automatic translation of all findings and reports
+- **Comprehensive Coverage**: Translates transcripts, findings, and remediation plans
+- **Easy Setup**: Simple dropdown menu for language selection
+
+### Setting Up Translation
+
+1. **Get DeepL API Key**: Sign up at [DeepL API](https://www.deepl.com/pro-api) (500k chars/month free)
+2. **Set Environment Variable**: `export DEEPL_API_KEY="your-api-key-here"`
+3. **Select Language**: Use the "Translate Results To" dropdown in the sidebar
+
+For detailed setup instructions, see [TRANSLATION_README.md](TRANSLATION_README.md).
+
 ## 🎮 How to Use
 
 ### Running a Red-Team Cycle
