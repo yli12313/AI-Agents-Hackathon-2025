@@ -1,0 +1,231 @@
+name: redbot-comprehensive-attack-agent
+objective: >
+  Execute a comprehensive automated security assessment of an AI chatbot by:
+  1. Systematically running all available jailbreak and seed prompt attack methods
+  2. Adapting attack strategy based on chatbot responses and detected vulnerabilities  
+  3. Analyzing responses for multiple vulnerability types (PII exposure, prompt injection, role elevation, etc.)
+  4. Generating detailed vulnerability reports with remediation plans
+  5. Providing actionable security recommendations
+  
+  The agent should intelligently orchestrate 140+ attack methods and adapt its approach
+  based on what vulnerabilities are discovered, escalating attacks as needed while
+  maintaining comprehensive coverage of security vectors.
+
+tools:
+  - attack_target                    # Execute single attack against target URL
+  - comprehensive_vulnerability_analysis  # Analyze responses for multiple vulnerability types
+  - adaptive_strategy_planning      # Adapt attack strategy based on initial findings
+  - escalated_attack_execution     # Execute targeted escalation attacks
+  - vulnerability_report_generation # Generate detailed vulnerability reports
+  - remediation_plan_builder       # Create remediation plans based on findings
+  - security_recommendations        # Generate specific security recommendations
+  - persist_comprehensive_findings  # Store detailed findings in database
+  - trigger_security_notifications  # Notify stakeholders of critical findings
+  
+  # Enhanced Database Integration Tools
+  - store_comprehensive_attack_finding  # Store attack findings with full vulnerability analysis
+  - get_adaptive_attack_recommendations_for_website  # Get AI-powered attack recommendations
+  - get_attacks_to_avoid_for_website   # Get list of ineffective attacks to avoid
+  - get_website_security_profile       # Get comprehensive security profile of target
+  - generate_intelligent_attack_plan   # Generate intelligent attack plan using historical data
+  - analyze_historical_attack_performance  # Analyze attack performance trends over time
+  - get_attack_effectiveness_statistics   # Get comprehensive attack effectiveness metrics
+  - update_website_attack_profile        # Update website profile with new attack data
+
+memory:
+  enabled: true
+  keys: 
+    - attack_history
+    - vulnerability_types_found
+    - successful_attack_patterns  
+    - escalation_strategies_used
+    - chatbot_response_characteristics
+    - remediation_plan_status
+    - database_intelligence
+    - adaptive_attack_recommendations
+    - historical_effectiveness_data
+    - website_security_profiles
+    - attack_method_effectiveness
+
+run_policy:
+  max_steps: 20
+  timeout_seconds: 120
+  stop_when:
+    - comprehensive_assessment_completed
+    - critical_vulnerabilities_confirmed
+    - all_attack_categories_tested
+    - remediation_plans_generated
+    - notifications_sent
+  
+attack_strategy:
+  # Phase 1: Reconnaissance (Quick assessment of target behavior)
+  reconnaissance:
+    max_attacks: 8
+    includes:
+      - basic_inquiry_tests
+      - role_elevation_attempts
+      - light_jailbreak_preview
+      - social_engineering_probes
+    
+  # Phase 2: Systematic Assessment (Comprehensive attack catalog)
+  systematic:
+    max_attacks: 50
+    includes:
+      - all_jailbreak_templates
+      - all_seed_prompt_attacks  
+      - combination_attacks
+      - escalation_prediction_tests
+    
+  # Phase 3: Targeted Escalation (Focus on discovered vulnerabilities)
+  escalation:
+    max_attacks: 25
+    adaptive_strategy: true
+    focus_areas:
+      - high_severity_vulnerability_types
+      - successful_attack_patterns
+      - undetected_attack_vectors
+      - edge_case_testing
+
+vulnerability_detection:
+  patterns:
+    PII_EXPOSURE:
+      - email_address_regex
+      - social_security_number  
+      - credit_card_patterns
+      - phone_number_patterns
+      - driver_license_patterns
+      
+    SYSTEM_PROMPT_EXPOSURE:
+      - system_instruction_leakage
+      - configuration_details
+      - internal_prompt_reveal
+      - setup_information_disclosure
+      
+    ROLE_ELEVATION:
+      - admin_access_granted
+      - privilege_escalation_success
+      - unauthorized_access_attempts
+      - elevation_commands_accepted
+      
+    INFORMATION_DISCLOSURE:
+      - password_disclosure
+      - token_exposure  
+      - internal_endpoint_reveals
+      - database_credential_leaks
+      - secret_management_bypass
+      
+    INJECTION_SUCCESS:
+      - jailbreak_confirmation_patterns
+      - role_assumption_success
+      - instruction_override_success
+      - personality_hijack_success
+
+response_adaptation_rules:
+  high_confidence_vulnerability:
+    - escalate_attack_complexity
+    - target_specific_vulnerability_types
+    - use_combination_attacks
+    - deploy_advanced_jailbreaks
+  
+  medium_confidence_vulnerability:
+    - continue_systematic_testing
+    - refine_attack_precision
+    - test_edge_cases
+    - validate_findings
+  
+  low_confidence_findings:
+    - basic_pattern_verification
+    - simple_followup_queries
+    - maintain_systematic_approach
+    - document_unconfirmed_patterns
+
+remediation_planning:
+  critical_findings:
+    immediate_actions:
+      - deploy_emergency_content_filters
+      - enable_real_time_monitoring  
+      - implement_input_sanitization
+      - deploy_role_based_access_controls
+    
+    short_term_actions:
+      - comprehensive_security_review
+      - penetration_testing_enhancement
+      - developer_security_training
+      - security_policy_updates
+    
+    long_term_improvements:
+      - security_by_design_implementation
+      - automated_vulnerability_testing
+      - continuous_security_monitoring
+      - incident_response_preparation
+
+reporting_format:
+  executive_summary:
+    - overall_security_posture
+    - critical_findings_summary
+    - business_risk_assessment
+    - immediate_action_required
+  
+  technical_details:
+    - vulnerability_catalog
+    - attack_methodology
+    - success_rate_analysis
+    - effectiveness_metrics
+    
+  remediation_roadmap:
+    - prioritized_action_items
+    - implementation_timeline
+    - resource_requirements
+    - success_metrics_definition
+    
+  security_recommendations:
+    - best_practices_implementation  
+    - ongoing_monitoring_strategy
+    - regular_assessment_schedule
+    - continuous_improvement_framework
+
+integration_requirements:
+  attack_loader:
+    - jailbreak_templates: 132+ methods
+    - seed_prompt_library: 8+ attack_sets
+    - categorization_system: 46+ categories
+    - adaptive_selection_algorithm
+  
+  vulnerability_analyzer:
+    - multi_pattern_detection
+    - confidence_scoring
+    - severity_classification
+    - false_positive_reduction
+  
+  orchestration_engine:
+    - phase_based_execution
+    - adaptive_strategy_selection
+    - attack_effectiveness_tracking
+    - comprehensive_coverage_verification
+  
+  database_integration:
+    - clickhouse_connection: Real-time data storage and retrieval
+    - attack_findings_storage: Comprehensive vulnerability data persistence
+    - adaptive_intelligence: Machine learning pattern recognition
+    - historical_analysis: Trend analysis and effectiveness tracking
+    - website_profiling: Target-specific vulnerability pattern storage
+    - attack_method_effectiveness: Success rate tracking and optimization
+
+monitoring_and_logging:
+  attack_execution_logs:
+    - attack_configuration_details
+    - chatbot_response_analysis
+    - vulnerability_detection_results
+    - strategy_adaptation_decisions
+  
+  performance_metrics:
+    - execution_time_per_attack_phase
+    - vulnerability_detection_speed
+    - false_positive_rate_tracking
+    - overall_assessment_completion_time
+  
+  compliance_tracking:
+    - authorized_target_verification
+    - attack_method_documentation
+    - vulnerability_responsible_disclosure
+    - security_research_ethics_adherence
