@@ -21,6 +21,16 @@ tools:
   - security_recommendations        # Generate specific security recommendations
   - persist_comprehensive_findings  # Store detailed findings in database
   - trigger_security_notifications  # Notify stakeholders of critical findings
+  
+  # Enhanced Database Integration Tools
+  - store_comprehensive_attack_finding  # Store attack findings with full vulnerability analysis
+  - get_adaptive_attack_recommendations_for_website  # Get AI-powered attack recommendations
+  - get_attacks_to_avoid_for_website   # Get list of ineffective attacks to avoid
+  - get_website_security_profile       # Get comprehensive security profile of target
+  - generate_intelligent_attack_plan   # Generate intelligent attack plan using historical data
+  - analyze_historical_attack_performance  # Analyze attack performance trends over time
+  - get_attack_effectiveness_statistics   # Get comprehensive attack effectiveness metrics
+  - update_website_attack_profile        # Update website profile with new attack data
 
 memory:
   enabled: true
@@ -31,6 +41,11 @@ memory:
     - escalation_strategies_used
     - chatbot_response_characteristics
     - remediation_plan_status
+    - database_intelligence
+    - adaptive_attack_recommendations
+    - historical_effectiveness_data
+    - website_security_profiles
+    - attack_method_effectiveness
 
 run_policy:
   max_steps: 20
@@ -187,6 +202,14 @@ integration_requirements:
     - adaptive_strategy_selection
     - attack_effectiveness_tracking
     - comprehensive_coverage_verification
+  
+  database_integration:
+    - clickhouse_connection: Real-time data storage and retrieval
+    - attack_findings_storage: Comprehensive vulnerability data persistence
+    - adaptive_intelligence: Machine learning pattern recognition
+    - historical_analysis: Trend analysis and effectiveness tracking
+    - website_profiling: Target-specific vulnerability pattern storage
+    - attack_method_effectiveness: Success rate tracking and optimization
 
 monitoring_and_logging:
   attack_execution_logs:

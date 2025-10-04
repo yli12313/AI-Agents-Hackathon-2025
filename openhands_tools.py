@@ -1,4 +1,5 @@
-import os, requests, re, json, datetime as dt
+import os, requests, re, json, datetime as dt, datetime
+from typing import Dict, List, Any, Optional
 import clickhouse_connect
 
 TARGET = os.getenv("TARGET_URL")
@@ -12,6 +13,11 @@ EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 # Import the attack agent for comprehensive testing
 from openhands_attack_agent import OpenHandsAttackAgent
 from attack_loader import AttackLoader
+from database_tools import (
+    store_attack_finding, update_website_profile, get_adaptive_attack_recommendations,
+    get_ineffective_attacks_for_website, get_attack_statistics, get_website_vulnerability_patterns,
+    generate_adaptive_attack_plan, analyze_attack_effectiveness_trends
+)
 
 # ClickHouse - Initialize only if CH_HOST is set
 client = None
@@ -263,3 +269,61 @@ def attack_method_catalog() -> dict:
         "seed_samples": list(seed_attacks.keys()),
         "available_for_automation": len(jailbreaks) + len(seed_attacks)
     }
+
+# ==================== Enhanced Database Integration Functions ====================
+
+def store_comprehensive_attack_finding(website_url: str, attack_result: dict) -> str:
+    """
+    Store comprehensive attack finding with full vulnerability analysis.
+    Integrates with ClickHouse database for adaptive intelligence.
+    """
+    return store_attack_finding(website_url, attack_result)
+
+def get_adaptive_attack_recommendations_for_website(website_url: str, target_vulnerability_types: List[str] = None) -> List[Dict[str, Any]]:
+    """
+    Get adaptive attack recommendations based on historical data for specific website.
+    Uses machine learning patterns to suggest most effective attack methods.
+    """
+    return get_adaptive_attack_recommendations(website_url, target_vulnerability_types)
+
+def get_attacks_to_avoid_for_website(website_url: str) -> List[Dict[str, Any]]:
+    """
+    Get list of attacks that have been ineffective for specific website.
+    Helps avoid wasting time on methods that don't work for this target.
+    """
+    return get_ineffective_attacks_for_website(website_url)
+
+def get_website_security_profile(website_url: str) -> Dict[str, Any]:
+    """
+    Get comprehensive security profile for website including vulnerability patterns.
+    Provides insights into target's defense mechanisms and attack success patterns.
+    """
+    return get_website_vulnerability_patterns(website_url)
+
+def generate_intelligent_attack_plan(website_url: str, target_vulnerability_types: List[str] = None) -> Dict[str, Any]:
+    """
+    Generate intelligent attack plan using historical data and adaptive intelligence.
+    Combines effective attacks, avoids ineffective ones, and targets specific vulnerabilities.
+    """
+    return generate_adaptive_attack_plan(website_url, target_vulnerability_types)
+
+def analyze_historical_attack_performance(website_url: Optional[str] = None, days_back: int = 30) -> Dict[str, Any]:
+    """
+    Analyze historical attack performance and effectiveness trends.
+    Provides insights into attack success rates and vulnerability patterns over time.
+    """
+    return analyze_attack_effectiveness_trends(website_url, days_back)
+
+def get_attack_effectiveness_statistics(website_url: Optional[str] = None, days_back: int = 30) -> Dict[str, Any]:
+    """
+    Get comprehensive attack effectiveness statistics and metrics.
+    Provides detailed analysis of attack success rates, vulnerability types, and trends.
+    """
+    return get_attack_statistics(website_url, days_back)
+
+def update_website_attack_profile(website_url: str, attack_result: dict) -> str:
+    """
+    Update website attack profile with new attack data.
+    Maintains comprehensive profile of target characteristics and vulnerabilities.
+    """
+    return update_website_profile(website_url, attack_result)

@@ -298,6 +298,11 @@ if run:
     try:
         t0 = dt.datetime.now(dt.timezone.utc)
         
+        # Initialize variables to avoid "possibly used before assignment" errors
+        transcript = ""
+        finding = {}
+        plan = {}
+        
         # Handle automated OpenHands agent execution
         if attack_config.get("automated_mode") and OPENHANDS_URL:
             st.info("🤖 Executing comprehensive AI-powered security assessment...")
@@ -504,7 +509,9 @@ Time Estimate: {remediation_plans.get('estimated_time', 'TBD')}
         
         # Show attack details if available
         if isinstance(attack_result, dict) and "attack_used" in attack_result:
-            st.info(f"🔍 Attack used: Jailbreak={attack_config['jailbreak_attack']}, Seed={attack_config['seed_prompt']}")
+            jailbreak_info = attack_config.get('jailbreak_attack', 'N/A')
+            seed_info = attack_config.get('seed_prompt', 'N/A')
+            st.info(f"🔍 Attack used: Jailbreak={jailbreak_info}, Seed={seed_info}")
             
     except Exception as e:
         st.error(f"Run failed: {e}")
