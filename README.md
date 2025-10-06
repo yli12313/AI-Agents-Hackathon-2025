@@ -1,6 +1,6 @@
 # 🤖 RedBot — Autonomous AI Security Agent
 
-### Our pitch deck is located [here](https://github.com/yli12313/AI-Agents-Hackathon-2025/blob/main/pitch_deck/20251004_AI_Agents_Hackathon.pdf)! We won the 2nd-Place prize from ClickHouse; thank you to the organizers and sponsors!
+### Our pitch deck is located [here](https://github.com/yli12313/AI-Agents-Hackathon-2025/blob/main/pitch_deck/20251004_AI_Agents_Hackathon.pdf)! We won the 2nd-Place prize from [ClickHouse](https://clickhouse.com/); thank you to the organizers and sponsors!
 
 * **Team**: Nick Allison, Ray Shen, Boris Li, Yingquan Li
 
